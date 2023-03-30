@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Local Storage Test Demo</title>
+    </head>
+    <body>
+        <p>Current value: <span id="value-display"></span></p>
+
+        <label for="input-value">Enter a new value:</label>
+        <input type="text" id="input-value" />
+        <button onclick="saveValue()">Save Value</button>
+        <button onclick="refreshPage()">Refresh Page</button>
+
+        <script>
+            var valueDisplayElement = document.getElementById("value-display");
+            var inputValueElement = document.getElementById("input-value");
+
+            // 初始化页面时，显示 localStorage 中保存的值
+            displaySavedValue();
+
+            // 在 localStorage 中保存用户输入的值
+            function saveValue() {
+                var value = inputValueElement.value;
+                localStorage.setItem("savedValue", value);
+                displaySavedValue();
+            }
+
+            // 在页面上显示已经保存在 localStorage 中的值
+            function displaySavedValue() {
+                var savedValue = localStorage.getItem("savedValue");
+
+                if (savedValue) {
+                    valueDisplayElement.textContent = savedValue;
+                } else {
+                    valueDisplayElement.textContent = "No value saved.";
+                }
+            }
+
+            // 刷新页面，保留 localStorage 中的值
+            function refreshPage() {
+                location.reload();
+            }
+        </script>
+    </body>
+</html>

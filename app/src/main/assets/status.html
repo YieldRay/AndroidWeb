@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Web Network Status Demo</title>
+    </head>
+    <body>
+        <p>Network status: <span id="network-status"></span></p>
+
+        <script>
+            var networkStatusElement = document.getElementById("network-status");
+
+            // 检查当前的网络状态
+            if (navigator.onLine) {
+                updateNetworkStatus(true);
+            } else {
+                updateNetworkStatus(false);
+            }
+
+            // 监听网络状态改变事件
+            window.addEventListener("online", function () {
+                updateNetworkStatus(true);
+            });
+
+            window.addEventListener("offline", function () {
+                updateNetworkStatus(false);
+            });
+
+            // 更新页面的网络状态信息
+            function updateNetworkStatus(online) {
+                if (online) {
+                    networkStatusElement.textContent = "Online";
+                    networkStatusElement.style.color = "green";
+                } else {
+                    networkStatusElement.textContent = "Offline";
+                    networkStatusElement.style.color = "red";
+                }
+            }
+        </script>
+    </body>
+</html>

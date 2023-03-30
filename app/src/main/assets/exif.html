@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=UTF-8 />
+<meta http-equiv=X-UA-Compatible content="IE=edge" />
+<meta name=viewport content="width=device-width, initial-scale=1.0" />
+<title>Image Info Reader</title>
+<script src=https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js></script>
+<script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script>
+<link href=https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.css rel=stylesheet />
+<script src=https://cdn.jsdelivr.net/npm/iu-toast@1.1.2/dist/iu-toast.min.js></script>
+<link rel=stylesheet href=https://landsoul.netlify.app/dist/landsoul.css />
+<style>body{margin:0}.center{display:flex;align-items:center;justify-content:center}#filepicker{display:block;height:6em;width:100%;box-shadow:1px 1px 1px rgba(0,0,0,0.1);word-break:break-all;position:relative;color:transparent}#filepicker::after{color:#ffa500;content:"点击或拖动图片到此区域内";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}::-webkit-file-upload-button{display:none;height:100%}#filepicker,.block{margin:1em 10%}@media screen and (max-width:48em){#filepicker,.block{margin:1em}}.copy{display:flex;align-items:stretch;justify-content:space-between}textarea{display:block;min-height:8em;width:100%;font-family:Consolas,monospace;padding:4px}</style>
+</head>
+<body>
+<h1 class=center>
+<script>document.write(document.title);</script>
+</h1>
+<div class=center>
+<input accept=image/* id=filepicker type=file />
+</div>
+<div id=area></div>
+</body>
+<script>document.getElementById("filepicker").addEventListener("change",async(e)=>{let files=Array.from(e.target.files);let file=files[0];const exif=await exifr.parse(file,true);const area=document.getElementById("area");try{const{prompt,negative,config}=parseParameters(exif.parameters);Reflect.deleteProperty(exif,"parameters");area.innerHTML=`${makeFileArea(file)}
+${makeCopyArea("prompt",prompt)}
+${makeCopyArea("negative",negative)}
+${makeCopyArea("config",config)}
+${makeCopyArea("exif",exif)}`;}catch(_){console.error(_);area.innerHTML=`${makeFileArea(file)}
+${makeCopyArea("exif",exif)}`;}
+const clipboard=new ClipboardJS(".clipboard");clipboard.on("success",(e)=>{iToast.success("Copied");console.info("Action:",e.action);console.info("Text:",e.text);console.info("Trigger:",e.trigger);e.clearSelection();});clipboard.on("error",(e)=>{iToast.fail("Error");console.error("Action:",e.action);console.error("Trigger:",e.trigger);});});function makeCopyArea(id,content){if(typeof content!=="string")content=JSON.stringify(content,null,4);return`<div class="block"><small>${id}</small><div class="copy"><textarea id="${id}">${content}</textarea><button data-clipboard-target="#${id}"class="clipboard">Copy</button></div></div>`;}
+function makeFileArea(file){return`<div class="block"><p><small>name:</small>${file.name}</p><p><small>size:</small>${file.size}B</p><p><small>type:</small>${file.type}</p></div>`;}
+function parseParameters(param){const lines=param.split(/[\n\r]/);let[prompt,negative,config]=lines;const N="Negative prompt: ";if(negative.startsWith(N)){negative=negative.slice(N.length);}
+config=config.split(",").map((s)=>s.trim()).map((opt)=>opt.split(": "));config=Object.fromEntries(config);return{prompt,negative,config};}</script>
+</html>

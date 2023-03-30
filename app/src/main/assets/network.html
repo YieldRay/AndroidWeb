@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Network Information API Demo</title>
+    </head>
+    <body>
+        <p>Connection Type: <span id="connection-type"></span></p>
+
+        <script>
+            // 检查浏览器是否支持 Network Information API
+            if ("connection" in navigator) {
+                var connection = navigator.connection;
+                var type = connection.type;
+
+                updateConnectionType(type);
+
+                // 监听网络类型变化事件
+                connection.addEventListener("change", function () {
+                    updateConnectionType(connection.type);
+                });
+            } else {
+                console.log("Network Information API is not supported on this browser.");
+            }
+
+            // 更新页面上的连接类型信息
+            function updateConnectionType(type) {
+                var typeMap = {
+                    bluetooth: "Bluetooth",
+                    cellular: "Cellular",
+                    ethernet: "Ethernet",
+                    mixed: "Mixed",
+                    none: "None",
+                    other: "Other",
+                    unknown: "Unknown",
+                    wifi: "Wi-Fi",
+                    wimax: "Wimax",
+                };
+
+                var connectionType = typeMap[type];
+                document.getElementById("connection-type").textContent = connectionType;
+            }
+        </script>
+    </body>
+</html>

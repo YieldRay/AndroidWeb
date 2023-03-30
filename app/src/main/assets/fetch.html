@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>fetch</title>
+        <style>
+            .fetch {
+                display: flex;
+                flex-direction: column;
+            }
+            .fetch textarea {
+                min-height: 10rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="fetch">
+            <textarea id="$textarea1"></textarea>
+            <button id="$button1">baidu.com</button>
+        </div>
+        <div class="fetch">
+            <textarea id="$textarea2"></textarea>
+            <button id="$button2">proxy/baidu.com</button>
+        </div>
+        <div class="fetch">
+            <textarea id="$textarea3"></textarea>
+            <button id="$button3">index.html</button>
+        </div>
+    </body>
+    <script>
+        function fetchProxy(input, init) {
+            const req = new Request(input, init);
+            return fetch("/api/proxy", {
+                ...req,
+                headers: {
+                    ...req.headers,
+                    "x-modreq": req.url,
+                },
+            });
+        }
+
+        $button1.onclick = async () => {
+            $textarea1.textContent = await fetch("https://baidu.com").then((res) => res.text());
+        };
+        $button2.onclick = async () => {
+            $textarea2.textContent = await fetchProxy("https://baidu.com").then((res) => res.text());
+        };
+        $button3.onclick = async () => {
+            $textarea3.textContent = await fetch("/").then((res) => res.text());
+        };
+    </script>
+</html>
