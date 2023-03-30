@@ -12,7 +12,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.*
 import java.security.KeyStore
-import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 
@@ -108,9 +107,7 @@ class WebServer(val loadAssert: (String) -> InputStream) : NanoHTTPD(8123) {
         val headersModRes = HashMap<String, String>()
         val url = headers["x-modreq"] ?: ""
         if (!isURL(url)) return newFixedLengthResponse(
-            Response.Status.BAD_REQUEST,
-            MIME_PLAINTEXT,
-            "x-modreq is invalid url"
+            Response.Status.BAD_REQUEST, MIME_PLAINTEXT, "x-modreq is invalid url"
         )
         headers.remove("x-modreq")
         headers.remove("host")
@@ -147,7 +144,7 @@ class WebServer(val loadAssert: (String) -> InputStream) : NanoHTTPD(8123) {
                     try {
                         session.inputStream.source().use { source -> sink.writeAll(source) }
                     } catch (e: IOException) {
-                        Log.e("okhttp", "RequestBody", e)
+                        Log.e("okhttp", "fail to transform InputStream to RequestBody", e)
                         throw e
                     }
                 }
@@ -217,10 +214,8 @@ class WebServer(val loadAssert: (String) -> InputStream) : NanoHTTPD(8123) {
             }
         } catch (e: Exception) {
             return newFixedLengthResponse(
-                Response.Status.SERVICE_UNAVAILABLE,
-                MIME_PLAINTEXT,
-                "fail to proxy, network error, reason: $e"
-            ).also { Log.e("request error", "/api/proxy", e) }
+                Response.Status.SERVICE_UNAVAILABLE, MIME_PLAINTEXT, "fail to proxy $url\n$e"
+            ).also { Log.e("/api/proxy Proxy Error", url, e) }
         }
     }
 
