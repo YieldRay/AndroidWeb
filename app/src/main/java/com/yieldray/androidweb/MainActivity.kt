@@ -1,12 +1,9 @@
 package com.yieldray.androidweb
 
-import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Intent
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.webkit.*
 import android.webkit.WebView.HitTestResult
 import android.widget.LinearLayout
@@ -94,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         mAgentWeb.agentWebSettings.webSettings.safeBrowsingEnabled = false
 
 
-        val webView = mAgentWeb.webCreator.webView;
+        val webView = mAgentWeb.webCreator.webView
         webView.setOnLongClickListener {
             // disable long press drag effect (which shows a draggable link)
             // if this is not a trouble, remove this code
