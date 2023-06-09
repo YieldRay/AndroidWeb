@@ -27,6 +27,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var origin: String
     private var port: Int? = null // this is available only after the http server starts
 
+    private var eval = fun(jsCode: String) {
+        val webView = mAgentWeb.webCreator.webView
+        webView.post { webView.evaluateJavascript(jsCode) {} }
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +68,6 @@ class MainActivity : AppCompatActivity() {
                         style.innerHTML="*{-webkit-tap-highlight-color:rgba(255,255,255,0);-webkit-focus-ring-color:rgba(0,0,0,0);-webkit-touch-callout:none;}";
                         document.head.appendChild(style)
                     """.trimIndent()
-
                     ) {}
                     super.onReceivedTitle(view, title)
                 }

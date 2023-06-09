@@ -64,10 +64,16 @@ class WebServer(val loadAssert: (String) -> InputStream) : NanoHTTPD(8123) {
 
     override fun serve(session: IHTTPSession): Response {
         var uri = session.uri ?: "/"
-        if ("/" == uri) uri = "/index.html"
+
+        // api
         if ("/api/proxy" == uri) return apiProxy(session)
 
-        uri = uri.substring(1)
+        // url fix
+        if ("/" == uri) uri = "/index.html"
+        if (uri.endsWith("/")) uri += "index.html"
+
+        // for assets path
+        uri = uri.removePrefix("/")
 
         return try {
             // send file from android asserts
@@ -185,7 +191,7 @@ class WebServer(val loadAssert: (String) -> InputStream) : NanoHTTPD(8123) {
 
 //                val stream = response.body?.byteStream()
                 val stream = response.body?.bytes()?.inputStream()
-                /*  TAKE CARE
+                /*  !TAKE CARE!
                 * cannot call .byteStream(), which will cause NanoHTTPD crash
                 * however call .bytes().inputStream() works
                 * */
